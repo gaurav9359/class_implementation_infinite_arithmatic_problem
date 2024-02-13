@@ -11,7 +11,7 @@ class InfiniteNumber {
 
   constructor(inputObject) {
     if (typeof inputObject === "number") {
-          console.log("You sent a number");
+
           // initialize the member array
           // Getting the string as a parameterand typecasting it into an integer
           let myFunc = num => Number(num);
@@ -21,7 +21,6 @@ class InfiniteNumber {
           this.checkInput();
     }
     else if(typeof inputObject === "string") {
-        console.log("You sent a string");
 
         //check if string contains only numbers or not
         if(isNaN(inputObject)){
@@ -41,7 +40,6 @@ class InfiniteNumber {
     this.checkInput()
     }
     else if (typeof inputObject === "object") {  // IS THIS HOW ITS DONE?
-    console.log("You sent an Object")
     if(!(inputObject instanceof InfiniteNumber)){
       throw new error("given object type is not valid")
     }
@@ -108,17 +106,19 @@ class InfiniteNumber {
    * @return {Array} result array of addition
    */
   additionOfTwoArray(numToAdd) {
-    //check if the input is valid
-    if(!(numToAdd instanceof InfiniteNumber)){
-      throw new Error("given input is not an object")
-    }
 
-    let num1= this._internalArray
-    let num2= numToAdd.getInternalArray();
-  
-    //remove preceeding zeros
-    num1 = this.removeLeadingZeros(num1);
-    num2 = this.removeLeadingZeros(num2);
+    
+ //check if the input is valid
+  if(!(numToAdd instanceof InfiniteNumber)){
+  throw new Error("given input is not an object")
+  }
+
+  let num1= this._internalArray
+  let num2= numToAdd.getInternalArray();
+
+  //remove preceeding zeros
+  num1 = this.removeLeadingZeros(num1);
+  num2 = this.removeLeadingZeros(num2);
     
     let ans = []; //ans to be returned
     let num1Index = num1.length - 1;
@@ -268,6 +268,59 @@ class InfiniteNumber {
     return ans;
   }
 
+  /**subFuntion to multiply one number with entire array
+   * @private 
+   * @param {Number} num to be multiplied
+   * @param {Array<Number>} numArray to be multiplied
+   * @return {Array} Array after multiplication
+   */
+  multiplyWithNumber(numArray, num, initialZero) {
+    let ans = [];
+    let carry = 0;
+  
+    //to append initial zero for final calculation
+    for (let zeroCount = 0; zeroCount < initialZero; zeroCount++) {
+      ans.unshift(0);
+    }
+    for (let numIndex = numArray.length - 1; numIndex >= 0; numIndex--) {
+      let temp = (numArray[numIndex] * num) + carry;
+      ans.unshift(temp%10);
+      carry = Math.floor(temp/10);
+    }
+    if(carry!==0) ans.unshift(carry)
+    return ans;
+  }
+  
+  /**Function to return the multiplication of two Arrays
+   * @param {Array<Number>} num1 input array should be number
+   * @param {Array<Number>} num2 input array should be number
+   * @throws {Error} if input is not integer or it is <0 or >9 or in Decimal
+   * @return {Array} result array of Multiplication
+   */
+  multiplicationofTwoArray(numToMultiply) {
+    //check if the input is valid
+    if(!(numToMultiply instanceof InfiniteNumber)){
+      throw new Error("given input is not an object")
+    }
+
+    let num1=this._internalArray
+    let num2=numToMultiply._internalArray;
+    let ans = new InfiniteNumber(0);
+  
+    //multiply entire num1 array with elemetents of num2 array one by one 
+    // then add it to the ans 
+    let num2Index = (num2.length - 1)
+    for (; num2Index >= 0; num2Index--) {
+      let initialZero = (num2.length - 1) - num2Index;
+      let sample= this.multiplyWithNumber(num1,num2[num2Index],initialZero);
+      sample= new InfiniteNumber(sample.join(""))
+      ans=ans.additionOfTwoArray(sample)
+      ans = new InfiniteNumber(ans.join(""));
+    }
+    
+    return ans;
+  }
+  
   /**getter method for internal array
    * @returns {Array<Integer>} array of the given input 
    */
@@ -285,7 +338,8 @@ class InfiniteNumber {
  
 }
 
-let num1 = new InfiniteNumber(4521);
-let num2 = new InfiniteNumber(511);
-console.log(num1.SubtractionOfArray(num2))
+let num1 = new InfiniteNumber(12);
+let num2 = new InfiniteNumber(24445654552);
+console.log(num1.additionOfTwoArray(num2))
+console.log(num1.multiplicationofTwoArray(num2))
 
