@@ -292,12 +292,12 @@ class InfiniteNumber {
   }
   
   /**Function to return the multiplication of two Arrays
-   * @param {Array<Number>} num1 input array should be number
-   * @param {Array<Number>} num2 input array should be number
-   * @throws {Error} if input is not integer or it is <0 or >9 or in Decimal
+   * @param {Array<Number>} numToMultiply input array should be number
+   * @throws {Error} if numToMultiply is not valid object
    * @return {Array} result array of Multiplication
    */
   multiplicationofTwoArray(numToMultiply) {
+
     //check if the input is valid
     if(!(numToMultiply instanceof InfiniteNumber)){
       throw new Error("given input is not an object")
@@ -305,15 +305,24 @@ class InfiniteNumber {
 
     let num1=this._internalArray
     let num2=numToMultiply._internalArray;
+
+    //initialize the ans as object
     let ans = new InfiniteNumber(0);
   
     //multiply entire num1 array with elemetents of num2 array one by one 
     // then add it to the ans 
     let num2Index = (num2.length - 1)
     for (; num2Index >= 0; num2Index--) {
+      // initial zeros to be added
       let initialZero = (num2.length - 1) - num2Index;
+
+      // multiply num1 with single digit of num2 and store into sample
       let sample= this.multiplyWithNumber(num1,num2[num2Index],initialZero);
+
+      //convert sample into infiniteNumber object
       sample= new InfiniteNumber(sample.join(""))
+
+      // add the ans object with sample object and convert ans again into object
       ans=ans.additionOfTwoArray(sample)
       ans = new InfiniteNumber(ans.join(""));
     }
